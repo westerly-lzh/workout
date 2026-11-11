@@ -1,0 +1,202 @@
+{
+  "files": [
+    {
+      "id": "boxing",
+      "revision": 7,
+      "url": "https://raw.githubusercontent.com/westerly-lzh/workout/refs/heads/main/boxing.exercise.json",
+      "meta": {
+        "name": {
+          "ar": "ملاكمة",
+          "zh": "拳击",
+          "en": "Boxing",
+          "fr": "Boxe",
+          "ru": "Бокс",
+          "es": "Boxeo"
+        },
+        "summary": {
+          "ar": "من وضع الدفاع، افرد ذراعًا واحدة بسرعة ثم أعدها. كل ذراع تُحتسب.",
+          "zh": "从屈臂防守快速伸直任意一只手臂再收回，计 1 次。",
+          "en": "From a bent guard, extend either arm quickly and bring it back. Each arm counts.",
+          "fr": "Depuis une garde fléchie, tendez vite un bras puis ramenez-le. Chaque bras compte.",
+          "ru": "Из согнутой стойки быстро выпрямите любую руку и верните её. Считается каждая рука.",
+          "es": "Desde una guardia flexionada, extiende rápido cualquier brazo y vuelve a traerlo. Cada brazo cuenta."
+        },
+        "instructions": {
+          "ar": "واجه الكاميرا في وضع الدفاع، المرفقان مثنيان. اضرب إلى الأمام بأي يد حتى يمتد المرفق، ثم أعد اليد.",
+          "zh": "面对镜头摆好防守姿势，手肘弯曲。任意一只手向前打出并伸直手肘，然后收回。",
+          "en": "Face the camera in a guard with both elbows bent. Punch either hand forward until the elbow extends, then bring it back.",
+          "fr": "Face à la caméra, coudes fléchis. Envoyez une main vers l’avant jusqu’à tendre le coude, puis ramenez-la.",
+          "ru": "Встаньте лицом к камере, локти согнуты. Выбросите любую руку вперёд до выпрямления локтя и верните её.",
+          "es": "Mira a la cámara con los codos flexionados. Lanza cualquier mano hacia delante hasta estirar el codo y vuelve a traerla."
+        },
+        "tags": ["arms", "gesture"],
+        "variantIds": []
+      }
+    },
+    {
+      "id": "fold",
+      "revision": 4,
+      "url": "https://raw.githubusercontent.com/westerly-lzh/workout/refs/heads/main/fold.exercise.json",
+      "meta": {
+        "name": {
+          "ar": "انثناء أمامي واقف",
+          "zh": "站立体前屈",
+          "en": "Standing Forward Fold",
+          "fr": "Flexion avant debout",
+          "ru": "Наклон стоя",
+          "es": "Flexión de pie"
+        },
+        "summary": {
+          "ar": "استدر جانبًا وانحنِ إلى الأمام. كل ثانية كاملة تُحتسب مرة.",
+          "zh": "侧对镜头向前折，头靠近髋、手朝腿的方向，每满 1 秒计 1 次。",
+          "en": "Turn sideways and fold forward. Each full second counts once.",
+          "fr": "Tournez-vous de profil et penchez-vous. Chaque seconde complète compte une fois.",
+          "ru": "Повернитесь боком и наклонитесь вперёд. Каждая полная секунда считается один раз.",
+          "es": "Gira de lado y flexiona el tronco. Cada segundo completo cuenta una vez."
+        },
+        "instructions": {
+          "ar": "قف جانبًا وانحنِ من الوركين حتى يقترب الرأس من الوركين وتهبط اليدان نحو الساقين. الوقوف يوقف العد، والعودة إلى الانثناء تكمله.",
+          "zh": "侧对镜头站直。从髋部向前折，头降到靠近髋部，手朝腿的方向落下。站直后计时暂停，再折下去会接着累计。",
+          "en": "Turn sideways and stand tall. Fold from the hips until your head drops toward your hips and your hands move toward your legs. Standing pauses the count, and folding again continues it.",
+          "fr": "Placez-vous de profil. Pliez depuis les hanches jusqu’à ce que la tête descende vers les hanches et les mains vers les jambes. Se redresser met le compte en pause.",
+          "ru": "Встаньте боком. Наклонитесь от бёдер, пока голова не опустится к тазу, а руки — к ногам. Если выпрямиться, счёт ставится на паузу.",
+          "es": "Colócate de lado. Flexiona desde las caderas hasta que la cabeza baje hacia las caderas y las manos hacia las piernas. Ponerte de pie pausa la cuenta."
+        },
+        "tags": ["mobility", "hold"],
+        "variantIds": []
+      }
+    },
+    {
+      "id": "jumprope",
+      "revision": 2,
+      "url": "https://raw.githubusercontent.com/westerly-lzh/workout/refs/heads/main/jumprope.exercise.json",
+      "meta": {
+        "name": {
+          "ar": "نط الحبل",
+          "zh": "跳绳",
+          "en": "Jump Rope",
+          "fr": "Corde à sauter",
+          "ru": "Скакалка",
+          "es": "Comba"
+        },
+        "summary": {
+          "ar": "اقفز بالقدمين معًا. تُحتسب مرة حين تغادر القدمان الأرض ثم تهبطان.",
+          "zh": "双脚同时跳起再落地，计 1 次。",
+          "en": "Jump with both feet. One rep when both feet leave the ground and land.",
+          "fr": "Sautez des deux pieds. Une répétition quand les deux pieds quittent le sol puis se posent.",
+          "ru": "Прыгайте двумя ногами. Повторение засчитывается, когда обе стопы отрываются и приземляются.",
+          "es": "Salta con los dos pies. Cuenta una vez cuando ambos dejan el suelo y aterrizan."
+        },
+        "instructions": {
+          "ar": "واجه الكاميرا وتراجع حتى يظهر الكاحلان. اقفز بالقدمين معًا ثم اهبط. بقاء قدم واحدة على الأرض لا يُحتسب.",
+          "zh": "面对镜头，退到双脚踝都留在画面里。双脚一起跳起，再落下。单脚不离地不算。",
+          "en": "Face the camera and step back until both ankles stay in view. Jump with both feet together, then land. One foot staying down does not count.",
+          "fr": "Face à la caméra, reculez jusqu’à voir les deux chevilles. Sautez des deux pieds, puis posez-vous. Un seul pied levé ne compte pas.",
+          "ru": "Встаньте лицом к камере и отойдите, чтобы обе лодыжки были видны. Прыгайте двумя ногами и приземляйтесь. Если одна стопа остаётся на земле, повтор не считается.",
+          "es": "Mira a la cámara y retrocede hasta ver ambos tobillos. Salta con los dos pies y aterriza. Si un pie no se levanta, no cuenta."
+        },
+        "tags": ["cardio", "repetition"],
+        "variantIds": []
+      }
+    },
+    {
+      "id": "lateral",
+      "revision": 4,
+      "url": "https://raw.githubusercontent.com/westerly-lzh/workout/refs/heads/main/lateral.exercise.json",
+      "meta": {
+        "name": {
+          "ar": "قفزة جانبية",
+          "zh": "左右横跳",
+          "en": "Lateral Hop",
+          "fr": "Saut latéral",
+          "ru": "Боковой прыжок",
+          "es": "Salto lateral"
+        },
+        "summary": {
+          "ar": "اقفز إلى اليسار أو اليمين. كل هبوط يُحتسب مرة.",
+          "zh": "向左或向右跳，落地计 1 次。",
+          "en": "Hop left or right. Each landing counts once.",
+          "fr": "Sautez à gauche ou à droite. Chaque réception compte une fois.",
+          "ru": "Прыгните влево или вправо. Каждое приземление считается один раз.",
+          "es": "Salta a la izquierda o a la derecha. Cada aterrizaje cuenta una vez."
+        },
+        "instructions": {
+          "ar": "واجه الكاميرا وتراجع حتى يظهر الكاحلان. اقفز جانبًا ثم استقر. الوقوف في المكان لا يضيف عدًا.",
+          "zh": "面对镜头，退到双脚踝都留在画面里。向一侧跳开并站稳。停在原地不会再加。",
+          "en": "Face the camera and step back until both ankles stay in view. Hop sideways and settle. Standing still does not add another count.",
+          "fr": "Face à la caméra, reculez jusqu’à voir les chevilles. Sautez de côté et stabilisez-vous. Rester sur place n’ajoute pas de compte.",
+          "ru": "Встаньте лицом к камере так, чтобы обе лодыжки были видны. Прыгните в сторону и стабилизируйтесь. Стоять на месте не добавляет повтор.",
+          "es": "Mira a la cámara y retrocede hasta ver los tobillos. Salta hacia un lado y quédate quieto. Quedarte parado no suma otro conteo."
+        },
+        "tags": ["cardio", "gesture"],
+        "variantIds": []
+      }
+    },
+    {
+      "id": "pushup",
+      "revision": 5,
+      "url": "https://raw.githubusercontent.com/westerly-lzh/workout/refs/heads/main/pushup.exercise.json",
+      "meta": {
+        "name": {
+          "ar": "تمرين الضغط",
+          "zh": "俯卧撑",
+          "en": "Push-up",
+          "fr": "Pompe",
+          "ru": "Отжимание",
+          "es": "Flexión"
+        },
+        "summary": {
+          "ar": "انزل ثم ادفع للأعلى. ثني المرفق وفرده مرة واحدة تُحتسب تكرارًا.",
+          "zh": "撑起再下降，肘关节完成一次屈伸计 1 次。",
+          "en": "Lower and press back up. One bend and straighten of the elbow counts once.",
+          "fr": "Descendez puis poussez. Une flexion et une extension du coude comptent une répétition.",
+          "ru": "Опуститесь и выжмите себя вверх. Одно сгибание и разгибание локтя — одно повторение.",
+          "es": "Baja y empuja hacia arriba. Una flexión y extensión del codo cuenta una repetición."
+        },
+        "instructions": {
+          "ar": "ضع اليدين على الأرض والجسم في خط مستقيم. اثنِ المرفقين حتى يقترب الصدر من الأرض ثم ادفع. ضع الهاتف إلى الجانب الأمامي.",
+          "zh": "双手撑地，身体保持一条直线。屈肘让胸口靠近地面，再撑起。手机放在身体侧前方，让肩、肘、腕进入画面。",
+          "en": "Hands on the floor, body in a straight line. Bend the elbows until the chest nears the floor, then press up. Place the phone to the front-side so the shoulder, elbow, and wrist stay in frame.",
+          "fr": "Mains au sol, corps aligné. Pliez les coudes jusqu’à ce que la poitrine approche du sol, puis poussez. Placez le téléphone sur le côté avant.",
+          "ru": "Ладони на полу, тело прямое. Согните локти, пока грудь не приблизится к полу, затем выжмите себя. Телефон сбоку спереди.",
+          "es": "Manos en el suelo y cuerpo en línea. Flexiona los codos hasta que el pecho se acerque al suelo y luego empuja. Coloca el teléfono hacia el lado frontal."
+        },
+        "tags": ["arms", "repetition"],
+        "variantIds": []
+      }
+    },
+    {
+      "id": "squat",
+      "revision": 5,
+      "url": "https://raw.githubusercontent.com/westerly-lzh/workout/refs/heads/main/squat.exercise.json",
+      "meta": {
+        "name": {
+          "ar": "قرفصاء",
+          "zh": "深蹲",
+          "en": "Squat",
+          "fr": "Squat",
+          "ru": "Приседание",
+          "es": "Sentadilla"
+        },
+        "summary": {
+          "ar": "انزل في وضع القرفصاء ثم قف مستقيمًا لتُحتسب تكرارًا واحدًا.",
+          "zh": "下蹲后再站直，计为 1 次。",
+          "en": "Squat down, then stand tall to count one rep.",
+          "fr": "Descendez en squat, puis relevez-vous pour compter une répétition.",
+          "ru": "Присядьте и встаньте прямо — это одно повторение.",
+          "es": "Baja en sentadilla y vuelve a ponerte de pie para contar una repetición."
+        },
+        "instructions": {
+          "ar": "واجه الكاميرا وقدماك بمسافة تقارب عرض الكتفين. اجلس بالوركين إلى الخلف حتى يقترب الفخذان من المستوى الأفقي، ثم قف مستقيمًا. أبقِ الركبتين في اتجاه أصابع القدمين.",
+          "zh": "面对镜头，双脚约与肩同宽。髋向后坐下，直到大腿接近水平，再站直。两侧膝盖对准脚尖。",
+          "en": "Face the camera with your feet about shoulder-width apart. Sit your hips back until your thighs are near horizontal, then stand tall. Keep both knees tracking over your feet.",
+          "fr": "Faites face à la caméra, pieds écartés d’environ la largeur des épaules. Reculez les hanches jusqu’à ce que les cuisses soient presque horizontales, puis relevez-vous. Gardez les genoux alignés avec les pieds.",
+          "ru": "Встаньте лицом к камере, стопы примерно на ширине плеч. Отведите таз назад, пока бёдра не станут почти горизонтальными, затем встаньте прямо. Колени направлены в сторону носков.",
+          "es": "Mira a la cámara con los pies separados aproximadamente al ancho de los hombros. Lleva las caderas hacia atrás hasta que los muslos queden casi horizontales y luego ponte de pie. Mantén ambas rodillas alineadas con los pies."
+        },
+        "tags": ["legs", "repetition"],
+        "variantIds": ["beginner"]
+      }
+    }
+  ]
+}
