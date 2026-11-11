@@ -1,0 +1,427 @@
+{
+  "$schema": "https://fit.local/schemas/pose-action.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "squat",
+  "revision": 5,
+  "meta": {
+    "name": "copy.name",
+    "summary": "copy.summary",
+    "instructions": "copy.instructions",
+    "tags": [
+      "legs",
+      "repetition"
+    ],
+    "variantIds": [
+      "beginner"
+    ]
+  },
+  "text": {
+    "strings": {
+      "copy.name": {
+        "ar": "قرفصاء",
+        "zh": "深蹲",
+        "en": "Squat",
+        "fr": "Squat",
+        "ru": "Приседание",
+        "es": "Sentadilla"
+      },
+      "copy.summary": {
+        "ar": "انزل في وضع القرفصاء ثم قف مستقيمًا لتُحتسب تكرارًا واحدًا.",
+        "zh": "下蹲后再站直，计为 1 次。",
+        "en": "Squat down, then stand tall to count one rep.",
+        "fr": "Descendez en squat, puis relevez-vous pour compter une répétition.",
+        "ru": "Присядьте и встаньте прямо — это одно повторение.",
+        "es": "Baja en sentadilla y vuelve a ponerte de pie para contar una repetición."
+      },
+      "copy.instructions": {
+        "ar": "واجه الكاميرا وقدماك بمسافة تقارب عرض الكتفين. اجلس بالوركين إلى الخلف حتى يقترب الفخذان من المستوى الأفقي، ثم قف مستقيمًا. أبقِ الركبتين في اتجاه أصابع القدمين.",
+        "zh": "面对镜头，双脚约与肩同宽。髋向后坐下，直到大腿接近水平，再站直。两侧膝盖对准脚尖。",
+        "en": "Face the camera with your feet about shoulder-width apart. Sit your hips back until your thighs are near horizontal, then stand tall. Keep both knees tracking over your feet.",
+        "fr": "Faites face à la caméra, pieds écartés d’environ la largeur des épaules. Reculez les hanches jusqu’à ce que les cuisses soient presque horizontales, puis relevez-vous. Gardez les genoux alignés avec les pieds.",
+        "ru": "Встаньте лицом к камере, стопы примерно на ширине плеч. Отведите таз назад, пока бёдра не станут почти горизонтальными, затем встаньте прямо. Колени направлены в сторону носков.",
+        "es": "Mira a la cámara con los pies separados aproximadamente al ancho de los hombros. Lleva las caderas hacia atrás hasta que los muslos queden casi horizontales y luego ponte de pie. Mantén ambas rodillas alineadas con los pies."
+      },
+      "copy.beginner": {
+        "ar": "مبتدئ",
+        "zh": "初级",
+        "en": "Beginner",
+        "fr": "Débutant",
+        "ru": "Начальный",
+        "es": "Principiante"
+      },
+      "cues.ready": {
+        "ar": "تراجع قليلًا حتى تظهر الوركان والركبتان والكاحلان في الإطار.",
+        "zh": "后退一点，让髋、膝、踝进入画面。",
+        "en": "Step back until your hips, knees, and ankles are in frame.",
+        "fr": "Reculez jusqu’à ce que les hanches, les genoux et les chevilles soient dans le cadre.",
+        "ru": "Отойдите назад, чтобы бёдра, колени и лодыжки были в кадре.",
+        "es": "Retrocede hasta que las caderas, las rodillas y los tobillos entren en el encuadre."
+      },
+      "cues.tooShallow": {
+        "ar": "اجلس إلى مستوى أخفض قليلًا.",
+        "zh": "再坐低一点。",
+        "en": "Sit a little lower.",
+        "fr": "Descendez un peu plus bas.",
+        "ru": "Присядьте чуть ниже.",
+        "es": "Siéntate un poco más abajo."
+      },
+      "cues.even": {
+        "ar": "أبقِ الركبتين على المستوى نفسه.",
+        "zh": "两侧膝盖保持一致。",
+        "en": "Keep both knees even.",
+        "fr": "Gardez les deux genoux au même niveau.",
+        "ru": "Держите оба колена на одной высоте.",
+        "es": "Mantén ambas rodillas al mismo nivel."
+      },
+      "phases.standing": {
+        "ar": "وقوف",
+        "zh": "站立",
+        "en": "Standing",
+        "fr": "Debout",
+        "ru": "Стоя",
+        "es": "De pie"
+      },
+      "phases.bottom": {
+        "ar": "أسفل",
+        "zh": "底部",
+        "en": "Bottom",
+        "fr": "Bas",
+        "ru": "Внизу",
+        "es": "Abajo"
+      }
+    }
+  },
+  "requires": {
+    "engine": ">=1.0.0 <2.0.0",
+    "vision": [
+      "bodyPose2D"
+    ],
+    "features": []
+  },
+  "capture": {
+    "camera": "front",
+    "orientation": "portrait",
+    "analysisHz": 15,
+    "maxFrameGapMs": 200,
+    "person": "largest",
+    "onLowConfidence": "ignore",
+    "verticalReference": "imageUp"
+  },
+  "skeleton": {
+    "model": "body2D",
+    "frame": "imageNormalized",
+    "mirror": "anatomical",
+    "requiredJoints": [
+      "shoulder",
+      "hip",
+      "knee",
+      "ankle"
+    ],
+    "scales": []
+  },
+  "signals": [
+    {
+      "id": "bodySeen",
+      "op": "visibility",
+      "args": {
+        "joints": [
+          "shoulder",
+          "hip",
+          "knee",
+          "ankle"
+        ],
+        "minConfidence": 0.35
+      },
+      "side": "bothMin",
+      "smooth": {
+        "kind": "none"
+      },
+      "confidence": {
+        "reduce": "min",
+        "min": 0
+      }
+    },
+    {
+      "id": "kneeAngle",
+      "op": "jointAngle",
+      "args": {
+        "points": [
+          "hip",
+          "knee",
+          "ankle"
+        ]
+      },
+      "side": "bestConfidence",
+      "smooth": {
+        "kind": "ema",
+        "alpha": 0.45
+      },
+      "confidence": {
+        "reduce": "min",
+        "min": 0.35
+      }
+    },
+    {
+      "id": "kneeLeft",
+      "op": "jointAngle",
+      "args": {
+        "points": [
+          "hip",
+          "knee",
+          "ankle"
+        ]
+      },
+      "side": "left",
+      "smooth": {
+        "kind": "ema",
+        "alpha": 0.45
+      },
+      "confidence": {
+        "reduce": "min",
+        "min": 0.35
+      }
+    },
+    {
+      "id": "kneeRight",
+      "op": "jointAngle",
+      "args": {
+        "points": [
+          "hip",
+          "knee",
+          "ankle"
+        ]
+      },
+      "side": "right",
+      "smooth": {
+        "kind": "ema",
+        "alpha": 0.45
+      },
+      "confidence": {
+        "reduce": "min",
+        "min": 0.35
+      }
+    },
+    {
+      "id": "kneeGap",
+      "op": "symmetry",
+      "args": {
+        "left": "kneeLeft",
+        "right": "kneeRight",
+        "absolute": true
+      },
+      "smooth": {
+        "kind": "none"
+      },
+      "confidence": {
+        "reduce": "min",
+        "min": 0.35
+      }
+    }
+  ],
+  "predicates": [
+    {
+      "id": "bodyReady",
+      "expr": {
+        "op": "cmp",
+        "signal": "bodySeen",
+        "relation": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "kneeExtended",
+      "expr": {
+        "op": "band",
+        "signal": "kneeAngle",
+        "enter": {
+          "relation": "gte",
+          "value": 160
+        },
+        "exit": {
+          "relation": "lte",
+          "value": 150
+        }
+      }
+    },
+    {
+      "id": "kneeBottom",
+      "tune": [
+        "enter.value",
+        "exit.value"
+      ],
+      "expr": {
+        "op": "band",
+        "signal": "kneeAngle",
+        "enter": {
+          "relation": "lte",
+          "value": 100
+        },
+        "exit": {
+          "relation": "gte",
+          "value": 115
+        }
+      }
+    },
+    {
+      "id": "tooShallow",
+      "expr": {
+        "op": "all",
+        "args": [
+          {
+            "op": "cmp",
+            "signal": "kneeAngle",
+            "relation": "lt",
+            "value": 150
+          },
+          {
+            "op": "cmp",
+            "signal": "kneeAngle",
+            "relation": "gt",
+            "value": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "kneesUneven",
+      "expr": {
+        "op": "cmp",
+        "signal": "kneeGap",
+        "relation": "gt",
+        "value": 25
+      }
+    }
+  ],
+  "program": {
+    "kind": "cycle",
+    "laterality": {
+      "mode": "bilateralSymmetric"
+    },
+    "ready": {
+      "when": {
+        "op": "ref",
+        "predicate": "bodyReady"
+      },
+      "stableMs": 400,
+      "message": "cues.ready"
+    },
+    "phases": [
+      {
+        "id": "standing",
+        "enter": {
+          "op": "ref",
+          "predicate": "kneeExtended"
+        },
+        "minDwellMs": 80
+      },
+      {
+        "id": "bottom",
+        "enter": {
+          "op": "ref",
+          "predicate": "kneeBottom"
+        },
+        "minDwellMs": 80
+      }
+    ],
+    "order": [
+      "standing",
+      "bottom",
+      "standing"
+    ],
+    "mustVisit": [
+      "bottom"
+    ],
+    "countOn": "phaseEntered",
+    "countPhase": "standing",
+    "cooldownMs": 400,
+    "maxCycleMs": 8000,
+    "partial": "discard",
+    "tempo": {
+      "segments": [
+        {
+          "from": "standing",
+          "to": "bottom",
+          "minMs": 250,
+          "maxMs": 4000,
+          "violation": "warn"
+        },
+        {
+          "from": "bottom",
+          "to": "standing",
+          "minMs": 250,
+          "maxMs": 4000,
+          "violation": "warn"
+        }
+      ]
+    },
+    "rom": {
+      "signal": "kneeAngle",
+      "minTravel": 50,
+      "violation": "reject"
+    }
+  },
+  "form": [
+    {
+      "id": "depthCue",
+      "activeDuring": {
+        "phases": [
+          "standing"
+        ]
+      },
+      "when": {
+        "op": "ref",
+        "predicate": "tooShallow"
+      },
+      "effect": "warn",
+      "severity": "warning",
+      "cooldownMs": 2000,
+      "message": "cues.tooShallow"
+    },
+    {
+      "id": "symmetryCue",
+      "activeDuring": {
+        "phases": [
+          "bottom"
+        ]
+      },
+      "when": {
+        "op": "ref",
+        "predicate": "kneesUneven"
+      },
+      "effect": "warn",
+      "severity": "warning",
+      "cooldownMs": 2000,
+      "message": "cues.even"
+    }
+  ],
+  "scoring": {
+    "acceptRep": 1,
+    "rejectRep": 0,
+    "holdTick": 0,
+    "formPenalty": 0.15,
+    "quality": {
+      "depth": 0.6,
+      "symmetry": 0.2,
+      "tempo": 0.2
+    }
+  },
+  "variants": [
+    {
+      "id": "beginner",
+      "label": "copy.beginner",
+      "thresholds": [
+        {
+          "predicate": "kneeBottom",
+          "field": "enter.value",
+          "value": 115
+        },
+        {
+          "predicate": "kneeBottom",
+          "field": "exit.value",
+          "value": 130
+        }
+      ]
+    }
+  ],
+  "x-frameShare": 0.75
+}

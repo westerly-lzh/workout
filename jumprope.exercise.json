@@ -1,0 +1,186 @@
+{
+  "$schema": "https://fit.local/schemas/pose-action.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "jumprope",
+  "revision": 2,
+  "x-frameShare": 0.8,
+  "meta": {
+    "name": "copy.name",
+    "summary": "copy.summary",
+    "instructions": "copy.instructions",
+    "tags": ["cardio", "repetition"],
+    "variantIds": []
+  },
+  "text": {
+    "strings": {
+      "copy.name": {
+        "ar": "نط الحبل",
+        "zh": "跳绳",
+        "en": "Jump Rope",
+        "fr": "Corde à sauter",
+        "ru": "Скакалка",
+        "es": "Comba"
+      },
+      "copy.summary": {
+        "ar": "اقفز بالقدمين معًا. تُحتسب مرة حين تغادر القدمان الأرض ثم تهبطان.",
+        "zh": "双脚同时跳起再落地，计 1 次。",
+        "en": "Jump with both feet. One rep when both feet leave the ground and land.",
+        "fr": "Sautez des deux pieds. Une répétition quand les deux pieds quittent le sol puis se posent.",
+        "ru": "Прыгайте двумя ногами. Повторение засчитывается, когда обе стопы отрываются и приземляются.",
+        "es": "Salta con los dos pies. Cuenta una vez cuando ambos dejan el suelo y aterrizan."
+      },
+      "copy.instructions": {
+        "ar": "واجه الكاميرا وتراجع حتى يظهر الكاحلان. اقفز بالقدمين معًا ثم اهبط. بقاء قدم واحدة على الأرض لا يُحتسب.",
+        "zh": "面对镜头，退到双脚踝都留在画面里。双脚一起跳起，再落下。单脚不离地不算。",
+        "en": "Face the camera and step back until both ankles stay in view. Jump with both feet together, then land. One foot staying down does not count.",
+        "fr": "Face à la caméra, reculez jusqu’à voir les deux chevilles. Sautez des deux pieds, puis posez-vous. Un seul pied levé ne compte pas.",
+        "ru": "Встаньте лицом к камере и отойдите, чтобы обе лодыжки были видны. Прыгайте двумя ногами и приземляйтесь. Если одна стопа остаётся на земле, повтор не считается.",
+        "es": "Mira a la cámara y retrocede hasta ver ambos tobillos. Salta con los dos pies y aterriza. Si un pie no se levanta, no cuenta."
+      },
+      "cues.ready": {
+        "ar": "أظهر الوركين والكاحلين.",
+        "zh": "让髋和双踝进入画面。",
+        "en": "Show your hips and both ankles.",
+        "fr": "Montrez les hanches et les deux chevilles.",
+        "ru": "Покажите бёдра и обе лодыжки.",
+        "es": "Muestra las caderas y ambos tobillos."
+      },
+      "cues.bothFeet": {
+        "ar": "اقفز بالقدمين معًا.",
+        "zh": "双脚一起跳。",
+        "en": "Jump with both feet.",
+        "fr": "Sautez des deux pieds.",
+        "ru": "Прыгайте двумя ногами.",
+        "es": "Salta con los dos pies."
+      },
+      "phases.ground": {
+        "ar": "على الأرض",
+        "zh": "着地",
+        "en": "Ground",
+        "fr": "Sol",
+        "ru": "На земле",
+        "es": "Suelo"
+      },
+      "phases.air": {
+        "ar": "في الهواء",
+        "zh": "腾空",
+        "en": "Air",
+        "fr": "Air",
+        "ru": "В воздухе",
+        "es": "Aire"
+      }
+    }
+  },
+  "requires": {
+    "engine": ">=1.0.0 <2.0.0",
+    "vision": ["bodyPose2D"],
+    "features": []
+  },
+  "capture": {
+    "camera": "front",
+    "orientation": "portrait",
+    "analysisHz": 20,
+    "maxFrameGapMs": 200,
+    "person": "largest",
+    "onLowConfidence": "ignore",
+    "verticalReference": "imageUp"
+  },
+  "skeleton": {
+    "model": "body2D",
+    "frame": "imageNormalized",
+    "mirror": "anatomical",
+    "requiredJoints": ["hip", "ankle"],
+    "scales": []
+  },
+  "signals": [
+    {
+      "id": "bodySeen",
+      "op": "visibility",
+      "args": {
+        "joints": ["hip", "ankle"],
+        "minConfidence": 0.4
+      },
+      "side": "bothMin",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    },
+    {
+      "id": "ankleY",
+      "op": "position",
+      "args": { "joint": "ankle", "frame": "image", "axis": "y" },
+      "side": "bothMin",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0.4 }
+    },
+    {
+      "id": "rise",
+      "op": "deltaFromBaseline",
+      "args": { "signal": "ankleY", "maxDriftPerSecond": 0 },
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    }
+  ],
+  "predicates": [
+    {
+      "id": "bodyReady",
+      "expr": { "op": "cmp", "signal": "bodySeen", "relation": "gte", "value": 1 }
+    },
+    {
+      "id": "onGround",
+      "expr": {
+        "op": "band",
+        "signal": "rise",
+        "enter": { "relation": "lte", "value": 0.012 },
+        "exit": { "relation": "gte", "value": 0.02 }
+      }
+    },
+    {
+      "id": "inAir",
+      "expr": {
+        "op": "band",
+        "signal": "rise",
+        "enter": { "relation": "gte", "value": 0.025 },
+        "exit": { "relation": "lte", "value": 0.018 }
+      }
+    }
+  ],
+  "program": {
+    "kind": "cycle",
+    "laterality": { "mode": "bilateralSymmetric" },
+    "ready": {
+      "when": { "op": "ref", "predicate": "bodyReady" },
+      "stableMs": 0,
+      "message": "cues.ready"
+    },
+    "phases": [
+      { "id": "ground", "enter": { "op": "ref", "predicate": "onGround" }, "minDwellMs": 40 },
+      { "id": "air", "enter": { "op": "ref", "predicate": "inAir" }, "minDwellMs": 40 }
+    ],
+    "order": ["ground", "air", "ground"],
+    "mustVisit": ["air"],
+    "countOn": "phaseEntered",
+    "countPhase": "ground",
+    "cooldownMs": 0,
+    "maxCycleMs": 3000,
+    "partial": "discard"
+  },
+  "form": [
+    {
+      "id": "bothFeet",
+      "activeDuring": { "phases": ["ground"] },
+      "when": { "op": "ref", "predicate": "bodyReady" },
+      "effect": "info",
+      "severity": "info",
+      "cooldownMs": 2000,
+      "message": "cues.bothFeet"
+    }
+  ],
+  "scoring": {
+    "acceptRep": 1,
+    "rejectRep": 0,
+    "holdTick": 0,
+    "formPenalty": 0,
+    "quality": { "depth": 1, "symmetry": 0, "tempo": 0 }
+  },
+  "variants": []
+}

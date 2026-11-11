@@ -1,0 +1,155 @@
+{
+  "$schema": "https://fit.local/schemas/pose-action.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "boxing",
+  "revision": 7,
+  "x-frameShare": 0.7,
+  "meta": {
+    "name": "copy.name",
+    "summary": "copy.summary",
+    "instructions": "copy.instructions",
+    "tags": ["arms", "gesture"],
+    "variantIds": []
+  },
+  "text": {
+    "strings": {
+      "copy.name": {
+        "ar": "ملاكمة",
+        "zh": "拳击",
+        "en": "Boxing",
+        "fr": "Boxe",
+        "ru": "Бокс",
+        "es": "Boxeo"
+      },
+      "copy.summary": {
+        "ar": "من وضع الدفاع، افرد ذراعًا واحدة بسرعة ثم أعدها. كل ذراع تُحتسب.",
+        "zh": "从屈臂防守快速伸直任意一只手臂再收回，计 1 次。",
+        "en": "From a bent guard, extend either arm quickly and bring it back. Each arm counts.",
+        "fr": "Depuis une garde fléchie, tendez vite un bras puis ramenez-le. Chaque bras compte.",
+        "ru": "Из согнутой стойки быстро выпрямите любую руку и верните её. Считается каждая рука.",
+        "es": "Desde una guardia flexionada, extiende rápido cualquier brazo y vuelve a traerlo. Cada brazo cuenta."
+      },
+      "copy.instructions": {
+        "ar": "واجه الكاميرا في وضع الدفاع، المرفقان مثنيان. اضرب إلى الأمام بأي يد حتى يمتد المرفق، ثم أعد اليد.",
+        "zh": "面对镜头摆好防守姿势，手肘弯曲。任意一只手向前打出并伸直手肘，然后收回。",
+        "en": "Face the camera in a guard with both elbows bent. Punch either hand forward until the elbow extends, then bring it back.",
+        "fr": "Face à la caméra, coudes fléchis. Envoyez une main vers l’avant jusqu’à tendre le coude, puis ramenez-la.",
+        "ru": "Встаньте лицом к камере, локти согнуты. Выбросите любую руку вперёд до выпрямления локтя и верните её.",
+        "es": "Mira a la cámara con los codos flexionados. Lanza cualquier mano hacia delante hasta estirar el codo y vuelve a traerla."
+      },
+      "cues.ready": {
+        "ar": "أظهر الكتفين والذراعين.",
+        "zh": "让两侧肩膀和手臂进入画面。",
+        "en": "Show both shoulders and both arms.",
+        "fr": "Montrez les deux épaules et les deux bras.",
+        "ru": "Покажите оба плеча и обе руки.",
+        "es": "Muestra ambos hombros y ambos brazos."
+      },
+      "phases.gesture": {
+        "ar": "لكمة",
+        "zh": "出拳",
+        "en": "Punch",
+        "fr": "Coup",
+        "ru": "Удар",
+        "es": "Golpe"
+      }
+    }
+  },
+  "requires": {
+    "engine": ">=1.0.0 <2.0.0",
+    "vision": ["bodyPose2D"],
+    "features": []
+  },
+  "capture": {
+    "camera": "front",
+    "orientation": "portrait",
+    "analysisHz": 30,
+    "maxFrameGapMs": 80,
+    "person": "largest",
+    "onLowConfidence": "ignore",
+    "verticalReference": "imageUp"
+  },
+  "skeleton": {
+    "model": "body2D",
+    "frame": "imageNormalized",
+    "mirror": "anatomical",
+    "requiredJoints": ["nose", "shoulder", "elbow", "wrist"],
+    "scales": []
+  },
+  "signals": [
+    {
+      "id": "bodySeen",
+      "op": "visibility",
+      "args": {
+        "joints": ["shoulder", "elbow", "wrist"],
+        "minConfidence": 0.35
+      },
+      "side": "bothMin",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    },
+    {
+      "id": "elbowAngle",
+      "op": "jointAngle",
+      "args": { "points": ["shoulder", "elbow", "wrist"] },
+      "side": "bestConfidence",
+      "smooth": { "kind": "ema", "alpha": 0.6 },
+      "confidence": { "reduce": "min", "min": 0.35 }
+    },
+    {
+      "id": "elbowSpeed",
+      "op": "velocity",
+      "args": { "signal": "elbowAngle" },
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    }
+  ],
+  "predicates": [
+    {
+      "id": "bodyReady",
+      "expr": { "op": "cmp", "signal": "bodySeen", "relation": "gte", "value": 1 }
+    },
+    {
+      "id": "guard",
+      "expr": {
+        "op": "band",
+        "signal": "elbowAngle",
+        "enter": { "relation": "lte", "value": 110 },
+        "exit": { "relation": "gte", "value": 130 }
+      }
+    },
+    {
+      "id": "extended",
+      "expr": {
+        "op": "band",
+        "signal": "elbowAngle",
+        "enter": { "relation": "gte", "value": 155 },
+        "exit": { "relation": "lte", "value": 140 }
+      }
+    }
+  ],
+  "program": {
+    "kind": "gesture",
+    "laterality": { "mode": "either" },
+    "ready": {
+      "when": { "op": "ref", "predicate": "bodyReady" },
+      "stableMs": 0,
+      "message": "cues.ready"
+    },
+    "start": { "op": "ref", "predicate": "guard" },
+    "motion": { "signal": "elbowSpeed", "relation": "gte", "value": 250 },
+    "end": { "op": "ref", "predicate": "extended" },
+    "minDurationMs": 40,
+    "maxDurationMs": 700,
+    "refractoryMs": 220
+  },
+  "form": [],
+  "scoring": {
+    "acceptRep": 1,
+    "rejectRep": 0,
+    "holdTick": 0,
+    "formPenalty": 0,
+    "quality": { "depth": 0.6, "symmetry": 0, "tempo": 0.4 }
+  },
+  "variants": []
+}

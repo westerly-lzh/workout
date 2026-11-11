@@ -1,0 +1,176 @@
+{
+  "$schema": "https://fit.local/schemas/pose-action.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "fold",
+  "revision": 4,
+  "x-frameShare": 0.8,
+  "meta": {
+    "name": "copy.name",
+    "summary": "copy.summary",
+    "instructions": "copy.instructions",
+    "tags": ["mobility", "hold"],
+    "variantIds": []
+  },
+  "text": {
+    "strings": {
+      "copy.name": {
+        "ar": "انثناء أمامي واقف",
+        "zh": "站立体前屈",
+        "en": "Standing Forward Fold",
+        "fr": "Flexion avant debout",
+        "ru": "Наклон стоя",
+        "es": "Flexión de pie"
+      },
+      "copy.summary": {
+        "ar": "استدر جانبًا وانحنِ إلى الأمام. كل ثانية كاملة تُحتسب مرة.",
+        "zh": "侧对镜头向前折，头靠近髋、手朝腿的方向，每满 1 秒计 1 次。",
+        "en": "Turn sideways and fold forward. Each full second counts once.",
+        "fr": "Tournez-vous de profil et penchez-vous. Chaque seconde complète compte une fois.",
+        "ru": "Повернитесь боком и наклонитесь вперёд. Каждая полная секунда считается один раз.",
+        "es": "Gira de lado y flexiona el tronco. Cada segundo completo cuenta una vez."
+      },
+      "copy.instructions": {
+        "ar": "قف جانبًا وانحنِ من الوركين حتى يقترب الرأس من الوركين وتهبط اليدان نحو الساقين. الوقوف يوقف العد، والعودة إلى الانثناء تكمله.",
+        "zh": "侧对镜头站直。从髋部向前折，头降到靠近髋部，手朝腿的方向落下。站直后计时暂停，再折下去会接着累计。",
+        "en": "Turn sideways and stand tall. Fold from the hips until your head drops toward your hips and your hands move toward your legs. Standing pauses the count, and folding again continues it.",
+        "fr": "Placez-vous de profil. Pliez depuis les hanches jusqu’à ce que la tête descende vers les hanches et les mains vers les jambes. Se redresser met le compte en pause.",
+        "ru": "Встаньте боком. Наклонитесь от бёдер, пока голова не опустится к тазу, а руки — к ногам. Если выпрямиться, счёт ставится на паузу.",
+        "es": "Colócate de lado. Flexiona desde las caderas hasta que la cabeza baje hacia las caderas y las manos hacia las piernas. Ponerte de pie pausa la cuenta."
+      },
+      "cues.ready": {
+        "ar": "استدر جانبًا وأظهر الجسم كاملًا.",
+        "zh": "侧过身，让全身进入画面。",
+        "en": "Turn sideways and get your whole body in frame.",
+        "fr": "Tournez-vous de profil et placez tout le corps dans le cadre.",
+        "ru": "Повернитесь боком и поместите всё тело в кадр.",
+        "es": "Gira de lado y mete todo el cuerpo en el encuadre."
+      },
+      "cues.fold": {
+        "ar": "انحنِ، واليدان نحو الساقين.",
+        "zh": "向前折，手朝腿的方向。",
+        "en": "Fold forward, hands toward your legs.",
+        "fr": "Penchez-vous, mains vers les jambes.",
+        "ru": "Наклонитесь, руки к ногам.",
+        "es": "Flexiona, manos hacia las piernas."
+      },
+      "phases.hold": {
+        "ar": "انثناء",
+        "zh": "体前屈",
+        "en": "Folded",
+        "fr": "Penché",
+        "ru": "Наклон",
+        "es": "Flexión"
+      }
+    }
+  },
+  "requires": {
+    "engine": ">=1.0.0 <2.0.0",
+    "vision": ["bodyPose2D"],
+    "features": []
+  },
+  "capture": {
+    "camera": "front",
+    "orientation": "portrait",
+    "analysisHz": 12,
+    "maxFrameGapMs": 250,
+    "person": "largest",
+    "onLowConfidence": "ignore",
+    "verticalReference": "imageUp"
+  },
+  "skeleton": {
+    "model": "body2D",
+    "frame": "imageNormalized",
+    "mirror": "anatomical",
+    "requiredJoints": ["nose", "hip", "knee", "ankle", "wrist"],
+    "scales": []
+  },
+  "signals": [
+    {
+      "id": "bodySeen",
+      "op": "visibility",
+      "args": {
+        "joints": ["nose", "hip", "knee", "ankle", "wrist"],
+        "minConfidence": 0.35
+      },
+      "side": "bothMin",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    },
+    {
+      "id": "headRatio",
+      "op": "ratio",
+      "args": {
+        "subject": "nose",
+        "origin": "hip",
+        "spanFrom": "ankle",
+        "spanTo": "hip",
+        "axis": "y"
+      },
+      "side": "bestConfidence",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0.35 }
+    },
+    {
+      "id": "wristRatio",
+      "op": "ratio",
+      "args": {
+        "subject": "wrist",
+        "origin": "knee",
+        "spanFrom": "ankle",
+        "spanTo": "hip",
+        "axis": "y"
+      },
+      "side": "bothMin",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0.35 }
+    }
+  ],
+  "predicates": [
+    {
+      "id": "bodyReady",
+      "expr": { "op": "cmp", "signal": "bodySeen", "relation": "gte", "value": 1 }
+    },
+    {
+      "id": "folded",
+      "expr": {
+        "op": "all",
+        "args": [
+          { "op": "cmp", "signal": "headRatio", "relation": "lte", "value": 0.55 },
+          { "op": "cmp", "signal": "wristRatio", "relation": "lte", "value": 0.35 }
+        ]
+      }
+    }
+  ],
+  "program": {
+    "kind": "hold",
+    "laterality": { "mode": "bilateralSymmetric" },
+    "ready": {
+      "when": { "op": "ref", "predicate": "bodyReady" },
+      "stableMs": 0,
+      "message": "cues.ready"
+    },
+    "pose": { "op": "ref", "predicate": "folded" },
+    "enterConfirmMs": 200,
+    "timing": { "mode": "tick", "tickMs": 1000 },
+    "break": { "policy": "pause", "graceMs": 2000 }
+  },
+  "form": [
+    {
+      "id": "foldCue",
+      "activeDuring": { "scope": "always" },
+      "when": { "op": "ref", "predicate": "folded" },
+      "effect": "warn",
+      "severity": "info",
+      "cooldownMs": 2000,
+      "message": "cues.fold"
+    }
+  ],
+  "scoring": {
+    "acceptRep": 0,
+    "rejectRep": 0,
+    "holdTick": 1,
+    "formPenalty": 0,
+    "quality": { "depth": 0.5, "symmetry": 0.5, "tempo": 0 }
+  },
+  "variants": []
+}

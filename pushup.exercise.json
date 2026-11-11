@@ -1,0 +1,190 @@
+{
+  "$schema": "https://fit.local/schemas/pose-action.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "pushup",
+  "revision": 5,
+  "x-frameShare": 0.55,
+  "meta": {
+    "name": "copy.name",
+    "summary": "copy.summary",
+    "instructions": "copy.instructions",
+    "tags": ["arms", "repetition"],
+    "variantIds": []
+  },
+  "text": {
+    "strings": {
+      "copy.name": {
+        "ar": "تمرين الضغط",
+        "zh": "俯卧撑",
+        "en": "Push-up",
+        "fr": "Pompe",
+        "ru": "Отжимание",
+        "es": "Flexión"
+      },
+      "copy.summary": {
+        "ar": "انزل ثم ادفع للأعلى. ثني المرفق وفرده مرة واحدة تُحتسب تكرارًا.",
+        "zh": "撑起再下降，肘关节完成一次屈伸计 1 次。",
+        "en": "Lower and press back up. One bend and straighten of the elbow counts once.",
+        "fr": "Descendez puis poussez. Une flexion et une extension du coude comptent une répétition.",
+        "ru": "Опуститесь и выжмите себя вверх. Одно сгибание и разгибание локтя — одно повторение.",
+        "es": "Baja y empuja hacia arriba. Una flexión y extensión del codo cuenta una repetición."
+      },
+      "copy.instructions": {
+        "ar": "ضع اليدين على الأرض والجسم في خط مستقيم. اثنِ المرفقين حتى يقترب الصدر من الأرض ثم ادفع. ضع الهاتف إلى الجانب الأمامي.",
+        "zh": "双手撑地，身体保持一条直线。屈肘让胸口靠近地面，再撑起。手机放在身体侧前方，让肩、肘、腕进入画面。",
+        "en": "Hands on the floor, body in a straight line. Bend the elbows until the chest nears the floor, then press up. Place the phone to the front-side so the shoulder, elbow, and wrist stay in frame.",
+        "fr": "Mains au sol, corps aligné. Pliez les coudes jusqu’à ce que la poitrine approche du sol, puis poussez. Placez le téléphone sur le côté avant.",
+        "ru": "Ладони на полу, тело прямое. Согните локти, пока грудь не приблизится к полу, затем выжмите себя. Телефон сбоку спереди.",
+        "es": "Manos en el suelo y cuerpo en línea. Flexiona los codos hasta que el pecho se acerque al suelo y luego empuja. Coloca el teléfono hacia el lado frontal."
+      },
+      "cues.ready": {
+        "ar": "أظهر الكتف والمرفق والرسغ.",
+        "zh": "让肩、肘、腕进入画面。",
+        "en": "Show your shoulder, elbow, and wrist.",
+        "fr": "Montrez l’épaule, le coude et le poignet.",
+        "ru": "Покажите плечо, локоть и запястье.",
+        "es": "Muestra el hombro, el codo y la muñeca."
+      },
+      "cues.deeper": {
+        "ar": "اثنِ المرفقين أكثر قليلًا.",
+        "zh": "手肘再弯一些。",
+        "en": "Bend the elbows a little more.",
+        "fr": "Pliez un peu plus les coudes.",
+        "ru": "Согните локти чуть сильнее.",
+        "es": "Dobla un poco más los codos."
+      },
+      "phases.up": {
+        "ar": "أعلى",
+        "zh": "撑起",
+        "en": "Up",
+        "fr": "Haut",
+        "ru": "Вверху",
+        "es": "Arriba"
+      },
+      "phases.bottom": {
+        "ar": "أسفل",
+        "zh": "底部",
+        "en": "Bottom",
+        "fr": "Bas",
+        "ru": "Внизу",
+        "es": "Abajo"
+      }
+    }
+  },
+  "requires": {
+    "engine": ">=1.0.0 <2.0.0",
+    "vision": ["bodyPose2D"],
+    "features": []
+  },
+  "capture": {
+    "camera": "front",
+    "orientation": "landscape",
+    "analysisHz": 15,
+    "maxFrameGapMs": 250,
+    "person": "largest",
+    "onLowConfidence": "ignore",
+    "verticalReference": "imageUp"
+  },
+  "skeleton": {
+    "model": "body2D",
+    "frame": "imageNormalized",
+    "mirror": "anatomical",
+    "requiredJoints": ["shoulder", "elbow", "wrist"],
+    "scales": []
+  },
+  "signals": [
+    {
+      "id": "bodySeen",
+      "op": "visibility",
+      "args": {
+        "joints": ["shoulder", "elbow", "wrist"],
+        "minConfidence": 0.35
+      },
+      "side": "bothMin",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    },
+    {
+      "id": "elbowAngle",
+      "op": "jointAngle",
+      "args": { "points": ["shoulder", "elbow", "wrist"] },
+      "side": "bestConfidence",
+      "smooth": { "kind": "ema", "alpha": 0.45 },
+      "confidence": { "reduce": "min", "min": 0.35 }
+    }
+  ],
+  "predicates": [
+    {
+      "id": "bodyReady",
+      "expr": { "op": "cmp", "signal": "bodySeen", "relation": "gte", "value": 1 }
+    },
+    {
+      "id": "elbowExtended",
+      "expr": {
+        "op": "band",
+        "signal": "elbowAngle",
+        "enter": { "relation": "gte", "value": 155 },
+        "exit": { "relation": "lte", "value": 145 }
+      }
+    },
+    {
+      "id": "elbowBottom",
+      "expr": {
+        "op": "band",
+        "signal": "elbowAngle",
+        "enter": { "relation": "lte", "value": 90 },
+        "exit": { "relation": "gte", "value": 105 }
+      }
+    },
+    {
+      "id": "stillHigh",
+      "expr": {
+        "op": "all",
+        "args": [
+          { "op": "cmp", "signal": "elbowAngle", "relation": "lt", "value": 150 },
+          { "op": "cmp", "signal": "elbowAngle", "relation": "gt", "value": 90 }
+        ]
+      }
+    }
+  ],
+  "program": {
+    "kind": "cycle",
+    "laterality": { "mode": "bilateralSymmetric" },
+    "ready": {
+      "when": { "op": "ref", "predicate": "bodyReady" },
+      "stableMs": 200,
+      "message": "cues.ready"
+    },
+    "phases": [
+      { "id": "up", "enter": { "op": "ref", "predicate": "elbowExtended" }, "minDwellMs": 80 },
+      { "id": "bottom", "enter": { "op": "ref", "predicate": "elbowBottom" }, "minDwellMs": 80 }
+    ],
+    "order": ["up", "bottom", "up"],
+    "mustVisit": ["bottom"],
+    "countOn": "phaseEntered",
+    "countPhase": "up",
+    "cooldownMs": 400,
+    "maxCycleMs": 8000,
+    "partial": "discard",
+    "rom": { "signal": "elbowAngle", "minTravel": 50, "violation": "reject" }
+  },
+  "form": [
+    {
+      "id": "depthCue",
+      "activeDuring": { "phases": ["up"] },
+      "when": { "op": "ref", "predicate": "stillHigh" },
+      "effect": "warn",
+      "severity": "warning",
+      "cooldownMs": 2000,
+      "message": "cues.deeper"
+    }
+  ],
+  "scoring": {
+    "acceptRep": 1,
+    "rejectRep": 0,
+    "holdTick": 0,
+    "formPenalty": 0.1,
+    "quality": { "depth": 0.7, "symmetry": 0.3, "tempo": 0 }
+  },
+  "variants": []
+}

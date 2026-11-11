@@ -1,0 +1,148 @@
+{
+  "$schema": "https://fit.local/schemas/pose-action.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "lateral",
+  "revision": 4,
+  "x-frameShare": 0.8,
+  "meta": {
+    "name": "copy.name",
+    "summary": "copy.summary",
+    "instructions": "copy.instructions",
+    "tags": ["cardio", "gesture"],
+    "variantIds": []
+  },
+  "text": {
+    "strings": {
+      "copy.name": {
+        "ar": "قفزة جانبية",
+        "zh": "左右横跳",
+        "en": "Lateral Hop",
+        "fr": "Saut latéral",
+        "ru": "Боковой прыжок",
+        "es": "Salto lateral"
+      },
+      "copy.summary": {
+        "ar": "اقفز إلى اليسار أو اليمين. كل هبوط يُحتسب مرة.",
+        "zh": "向左或向右跳，落地计 1 次。",
+        "en": "Hop left or right. Each landing counts once.",
+        "fr": "Sautez à gauche ou à droite. Chaque réception compte une fois.",
+        "ru": "Прыгните влево или вправо. Каждое приземление считается один раз.",
+        "es": "Salta a la izquierda o a la derecha. Cada aterrizaje cuenta una vez."
+      },
+      "copy.instructions": {
+        "ar": "واجه الكاميرا وتراجع حتى يظهر الكاحلان. اقفز جانبًا ثم استقر. الوقوف في المكان لا يضيف عدًا.",
+        "zh": "面对镜头，退到双脚踝都留在画面里。向一侧跳开并站稳。停在原地不会再加。",
+        "en": "Face the camera and step back until both ankles stay in view. Hop sideways and settle. Standing still does not add another count.",
+        "fr": "Face à la caméra, reculez jusqu’à voir les chevilles. Sautez de côté et stabilisez-vous. Rester sur place n’ajoute pas de compte.",
+        "ru": "Встаньте лицом к камере так, чтобы обе лодыжки были видны. Прыгните в сторону и стабилизируйтесь. Стоять на месте не добавляет повтор.",
+        "es": "Mira a la cámara y retrocede hasta ver los tobillos. Salta hacia un lado y quédate quieto. Quedarte parado no suma otro conteo."
+      },
+      "cues.ready": {
+        "ar": "أظهر الوركين والكاحلين.",
+        "zh": "让髋和双踝进入画面。",
+        "en": "Show your hips and both ankles.",
+        "fr": "Montrez les hanches et les deux chevilles.",
+        "ru": "Покажите бёдра и обе лодыжки.",
+        "es": "Muestra las caderas y ambos tobillos."
+      },
+      "phases.gesture": {
+        "ar": "هبوط",
+        "zh": "落地",
+        "en": "Landed",
+        "fr": "Réception",
+        "ru": "Приземление",
+        "es": "Aterrizaje"
+      }
+    }
+  },
+  "requires": {
+    "engine": ">=1.0.0 <2.0.0",
+    "vision": ["bodyPose2D"],
+    "features": []
+  },
+  "capture": {
+    "camera": "front",
+    "orientation": "portrait",
+    "analysisHz": 12,
+    "maxFrameGapMs": 250,
+    "person": "largest",
+    "onLowConfidence": "ignore",
+    "verticalReference": "imageUp"
+  },
+  "skeleton": {
+    "model": "body2D",
+    "frame": "imageNormalized",
+    "mirror": "anatomical",
+    "requiredJoints": ["hip", "ankle"],
+    "scales": []
+  },
+  "signals": [
+    {
+      "id": "bodySeen",
+      "op": "visibility",
+      "args": {
+        "joints": ["hip", "ankle"],
+        "minConfidence": 0.4
+      },
+      "side": "bothMin",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    },
+    {
+      "id": "hipX",
+      "op": "position",
+      "args": { "joint": "hip", "frame": "image", "axis": "x" },
+      "side": "bothMean",
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0.4 }
+    },
+    {
+      "id": "hipSpeed",
+      "op": "velocity",
+      "args": { "signal": "hipX" },
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    },
+    {
+      "id": "hopTravel",
+      "op": "windowRange",
+      "args": { "signal": "hipX", "windowMs": 400 },
+      "smooth": { "kind": "none" },
+      "confidence": { "reduce": "min", "min": 0 }
+    }
+  ],
+  "predicates": [
+    {
+      "id": "bodyReady",
+      "expr": { "op": "cmp", "signal": "bodySeen", "relation": "gte", "value": 1 }
+    },
+    {
+      "id": "planted",
+      "expr": { "op": "between", "signal": "hipSpeed", "min": -0.25, "max": 0.25 }
+    }
+  ],
+  "program": {
+    "kind": "gesture",
+    "laterality": { "mode": "bilateralSymmetric" },
+    "ready": {
+      "when": { "op": "ref", "predicate": "bodyReady" },
+      "stableMs": 0,
+      "message": "cues.ready"
+    },
+    "start": { "op": "ref", "predicate": "planted" },
+    "motion": { "signal": "hopTravel", "relation": "gte", "value": 0.05 },
+    "end": { "op": "ref", "predicate": "planted" },
+    "minDurationMs": 120,
+    "maxDurationMs": 900,
+    "refractoryMs": 280
+  },
+  "form": [],
+  "scoring": {
+    "acceptRep": 1,
+    "rejectRep": 0,
+    "holdTick": 0,
+    "formPenalty": 0,
+    "quality": { "depth": 1, "symmetry": 0, "tempo": 0 }
+  },
+  "variants": []
+}
